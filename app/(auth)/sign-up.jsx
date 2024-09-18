@@ -1,23 +1,24 @@
-
-
+import { useState } from "react";
 import { Link, router } from "expo-router";
-import React, { useState } from 'react';
-import { Image, ScrollView, StyleSheet, Text, View , Alert} from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context";
-import CustomButton from "../../components/CustomButton";
-import FormField from '../../components/FormField';
-import { images } from "../../constants";
-import { createUser } from '../../lib/appwrite';
+import { View, Text, ScrollView, Dimensions, Alert, Image } from "react-native";
 
+import { images } from "../../constants";
+import { createUser } from "../../lib/appwrite";
+import { CustomButton, FormField } from "../../components";
+import { useGlobalContext } from "../../context/GlobalProvider";
 
 const SignUp = () => {
+  const { setUser, setIsLogged } = useGlobalContext();
+
   const [isSubmitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
     username: "",
     email: "",
     password: "",
   });
-  const submit = async () =>{
+
+  const submit = async () => {
     if (form.username === "" || form.email === "" || form.password === "") {
       Alert.alert("Error", "Please fill in all fields");
     }
@@ -25,8 +26,8 @@ const SignUp = () => {
     setSubmitting(true);
     try {
       const result = await createUser(form.email, form.password, form.username);
-      /* setUser(result);
-      setIsLogged(true); */
+      setUser(result);
+      setIsLogged(true);
 
       router.replace("/home");
     } catch (error) {
@@ -34,15 +35,16 @@ const SignUp = () => {
     } finally {
       setSubmitting(false);
     }
-  }
+  };
+
   return (
-<SafeAreaView className="bg-primary h-full">
+    <SafeAreaView className="bg-primary h-full">
       <ScrollView>
         <View
           className="w-full flex justify-center h-full px-4 my-6"
-         /*  style={{
+          style={{
             minHeight: Dimensions.get("window").height - 100,
-          }} */
+          }}
         >
           <Image
             source={images.logo}
@@ -97,8 +99,7 @@ const SignUp = () => {
         </View>
       </ScrollView>
     </SafeAreaView>
-  )
-}
+  );
+};
 
-export default SignUp
-
+export default SignUp;
